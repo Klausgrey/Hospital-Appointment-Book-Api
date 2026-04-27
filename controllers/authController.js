@@ -3,13 +3,14 @@ const bcrypt = require("bcrypt");
 require("dotenv/config");
 const JWT_SECRET = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
+const { registerSchema } = require("../validators/authValidator");
 
 const register = async (req, res) => {
+	const validate = registerSchema.safeParse(req.body);
+	if (!validate.success)
+		return res.status(400).json({ error: validate.error.errors });
+
 	const { username, password } = req.body;
-	if (!username || !password)
-		return res
-			.status(400)
-			.json({ message: "Enter a correct username and password" });
 	try {
 		const hashedPassword = await bcrypt.hash(password, 10);
 		await User.create({ username, password: hashedPassword });
