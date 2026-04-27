@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 require("dotenv/config");
 const JWT_SECRET = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
-const { registerSchema } = require("../validators/authValidator");
+const { registerSchema, loginSchema } = require("../validators/authValidator");
 
 const register = async (req, res) => {
 	const validate = registerSchema.safeParse(req.body);
@@ -16,13 +16,16 @@ const register = async (req, res) => {
 		await User.create({ username, password: hashedPassword });
 		res.status(201).send("Registered successfully");
 	} catch (err) {
-		res.status(500).json({ message: "Server Error" });
+		next(err);
 	}
 };
 
 const login = async (req, res) => {
-	const { username, password } = req.body;
+	const validate = loginSchema.safeParse(req.body);
+	if (!validate.success)
+		return res.status(400).json({ error: validate.error.errors });
 
+	const { username, password } = req.body;
 	try {
 		const user = await User.findOne({ username });
 		if (!user) return res.status(401).json({ message: "Invalid credentials" });
@@ -39,7 +42,7 @@ const login = async (req, res) => {
 		);
 		res.status(200).json({ message: "Login successfully", token });
 	} catch (err) {
-		res.status(500).json({ message: "Server Error" });
+		next(err);
 	}
 };
 
@@ -50,7 +53,7 @@ const getUser = async (req, res) => {
 			return res.status(401).json({ message: "Invalid credentials" });
 		res.status(200).json(result);
 	} catch (err) {
-		res.status(500).json({ message: "Server Error" });
+		next(err);
 	}
 };
 module.exports = { register, login, getUser };

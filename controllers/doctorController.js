@@ -5,7 +5,7 @@ const getAllDoctors = async (req, res) => {
 		const result = await Doctor.find();
 		res.status(200).json(result);
 	} catch (err) {
-		res.status(500).json({ message: "Server Error" });
+		next(err)
 	}
 };
 
@@ -16,8 +16,7 @@ const getDoctorById = async (req, res) => {
 		const result = await Doctor.findById({ _id: doctorId });
 		res.status(200).json(result);
 	} catch (err) {
-		console.log(err)
-		res.status(500).json({ message: "Server Error" });
+		next(err)
 	}
 };
 

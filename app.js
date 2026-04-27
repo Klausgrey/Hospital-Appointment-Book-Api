@@ -6,6 +6,7 @@ const verifyToken = require("./middleware/auth");
 const mongoose = require("mongoose");
 require("dotenv/config");
 const MONGO_URI = process.env.MONGO_URI;
+const errorHandler = require("./middleware/errorHandler")
 
 const app = express();
 app.use(express.json());
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use("/auth", authRouter);
 app.use("/", verifyToken, doctorRouter);
 app.use("/", verifyToken, appointmentRoute);
+app.use(errorHandler)
 
 mongoose
 	.connect(MONGO_URI)

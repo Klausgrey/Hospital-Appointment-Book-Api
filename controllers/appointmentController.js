@@ -12,7 +12,7 @@ const postAppointment = async (req, res) => {
 		await Appointment.create({ patientId, doctorId, reason });
 		res.status(200).json({ message: "Appointment booked" });
 	} catch (err) {
-		res.status(500).json({ message: "Server Error" });
+		next(err)
 	}
 };
 
@@ -26,7 +26,7 @@ const getAppointment = async (req, res) => {
 		const appiontments = await Appointment.find({ patientId });
 		res.status(200).json(appiontments);
 	} catch (err) {
-		res.status(500).json({ message: "Server Error" });
+		next(err)
 	}
 };
 
@@ -39,7 +39,7 @@ const patchAppointment = async (req, res) => {
 		await Appointment.findByIdAndUpdate({ _id: appiontmentId }, { status });
 		res.status(200).json({ message: "Updates successfully" });
 	} catch (err) {
-		res.status(500).json({ message: "Server Error" });
+		next(err)
 	}
 };
 
