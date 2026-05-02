@@ -43,4 +43,19 @@ const patchAppointment = async (req, res) => {
 	}
 };
 
+const deleteAppiontments = async (req, res) => {
+  const appointmentstId = req.params.id;
+  let patientId = req.user.id
+
+  try {
+    let result = await Appointment.findById(appointmentstId)
+    if (result.patientId != patientId) return res.status(400).json(message: "Wrong Id passed to be deleted`);
+    ")
+    await Appointment.findByIdandDelete(patientId)
+    res.status(200).json({message: "Deleted:"})
+
+  } catch(err) {
+    next(err)
+  }
+}
 module.exports = { postAppointment, getAppointment, patchAppointment };
